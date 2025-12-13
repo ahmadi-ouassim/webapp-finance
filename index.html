@@ -1785,6 +1785,154 @@
             color: #8b5cf6;
         }
 
+        /* Category Details View */
+        .category-detail-section {
+            margin-top: 25px;
+        }
+
+        .category-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-detail-card {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .category-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .category-detail-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-detail-total {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .month-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .month-btn {
+            padding: 10px 15px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .month-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .month-btn:hover:not(.active) {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .category-transactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .category-transaction-item {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .category-transaction-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(5px);
+        }
+
+        .category-transaction-info {
+            flex: 1;
+        }
+
+        .category-transaction-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .category-transaction-date {
+            font-size: 0.85em;
+            color: var(--text-muted);
+        }
+
+        .category-transaction-amount {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--accent-danger);
+        }
+
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-stat-box {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-info);
+        }
+
+        .category-stat-label {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .category-stat-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .no-data-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
         /* Firebase Auth UI */
         .auth-overlay {
             position: fixed;
@@ -2276,6 +2424,33 @@
                     <canvas id="incomeChart"></canvas>
                 </div>
             </div>
+        </div>
+
+        <!-- Category Details View -->
+        <div class="section-card category-detail-section" style="margin-top: 25px; animation: fadeInUp 0.8s ease-out 0.85s both;">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">🔍</span>
+                    Category Deep Dive
+                </h2>
+            </div>
+
+            <!-- Category Selector -->
+            <div class="form-group">
+                <label class="form-label">Select Category to Analyze</label>
+                <select id="categoryDetailSelect" class="form-select" onchange="updateCategoryDetail()">
+                    <option value="">Choose a category...</option>
+                </select>
+            </div>
+
+            <!-- Month Selector -->
+            <div id="monthSelectorContainer" style="display: none;">
+                <label class="form-label" style="margin-bottom: 15px; display: block;">Select Month</label>
+                <div class="month-selector-grid" id="monthSelector"></div>
+            </div>
+
+            <!-- Category Details -->
+            <div id="categoryDetailContent"></div>
         </div>
 
         <!-- AI Financial Insights -->
@@ -2943,6 +3118,11 @@ Tap OK to copy to clipboard
         let filterYear = '';
         let filterAmount = '';
         let sortOption = 'date-desc';
+        
+        // Category detail state
+        let selectedCategory = '';
+        let selectedMonth = new Date().getMonth();
+        let selectedYear = new Date().getFullYear();
 
         // DOM elements
         const transactionForm = document.getElementById('transactionForm');
@@ -3943,6 +4123,7 @@ Tap OK to copy to clipboard
             updateBudgetList();
             updateMonthComparison();
             checkBudgetAlerts();
+            populateCategoryDetailSelector();
         }
 
         // Tab Switching
@@ -4700,6 +4881,212 @@ Format your response in clear sections with emojis. Be specific, encouraging, an
                 showNotification(`👋 Welcome, ${userName}!`, 'success');
             }
         });
+
+        // ============================================
+        // CATEGORY DETAIL VIEW
+        // ============================================
+
+        function populateCategoryDetailSelector() {
+            const categorySelect = document.getElementById('categoryDetailSelect');
+            
+            // Get all expense categories that have transactions
+            const categoriesWithTransactions = new Set();
+            transactions.filter(t => t.type === 'expense').forEach(t => {
+                categoriesWithTransactions.add(t.category);
+            });
+
+            categorySelect.innerHTML = '<option value="">Choose a category...</option>';
+            
+            Array.from(categoriesWithTransactions).sort().forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        function populateMonthSelector() {
+            const monthSelector = document.getElementById('monthSelector');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const currentDate = new Date();
+            
+            // Get all unique year-month combinations from transactions
+            const availableMonths = new Set();
+            transactions.forEach(t => {
+                const date = new Date(t.date);
+                const key = `${date.getFullYear()}-${date.getMonth()}`;
+                availableMonths.add(key);
+            });
+
+            // Generate last 12 months
+            monthSelector.innerHTML = '';
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                const key = `${year}-${month}`;
+                
+                const button = document.createElement('button');
+                button.className = 'month-btn';
+                button.textContent = `${months[month]} ${year}`;
+                button.onclick = () => selectMonth(month, year);
+                
+                // Highlight current month
+                if (month === selectedMonth && year === selectedYear) {
+                    button.classList.add('active');
+                }
+                
+                // Disable if no transactions
+                if (!availableMonths.has(key)) {
+                    button.style.opacity = '0.3';
+                    button.style.cursor = 'not-allowed';
+                    button.disabled = true;
+                }
+                
+                monthSelector.appendChild(button);
+            }
+        }
+
+        function selectMonth(month, year) {
+            selectedMonth = month;
+            selectedYear = year;
+            
+            // Update button states
+            document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            updateCategoryDetail();
+        }
+
+        function updateCategoryDetail() {
+            const category = document.getElementById('categoryDetailSelect').value;
+            
+            if (!category) {
+                document.getElementById('monthSelectorContainer').style.display = 'none';
+                document.getElementById('categoryDetailContent').innerHTML = '';
+                return;
+            }
+
+            selectedCategory = category;
+            document.getElementById('monthSelectorContainer').style.display = 'block';
+            populateMonthSelector();
+            displayCategoryDetail();
+        }
+
+        function displayCategoryDetail() {
+            if (!selectedCategory) return;
+
+            const contentDiv = document.getElementById('categoryDetailContent');
+            
+            // Filter transactions for selected category and month
+            const filteredTransactions = transactions.filter(t => {
+                const date = new Date(t.date);
+                return t.type === 'expense' &&
+                       t.category === selectedCategory &&
+                       date.getMonth() === selectedMonth &&
+                       date.getFullYear() === selectedYear;
+            });
+
+            if (filteredTransactions.length === 0) {
+                contentDiv.innerHTML = `
+                    <div class="no-data-message">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📭</div>
+                        <div>No transactions found for ${selectedCategory} in this month</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate statistics
+            const total = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
+            const average = total / filteredTransactions.length;
+            const highest = Math.max(...filteredTransactions.map(t => t.amount));
+            const lowest = Math.min(...filteredTransactions.map(t => t.amount));
+            const count = filteredTransactions.length;
+
+            // Sort by date descending
+            const sortedTransactions = [...filteredTransactions].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            contentDiv.innerHTML = `
+                <div class="category-detail-card">
+                    <div class="category-detail-header">
+                        <div class="category-detail-title">
+                            ${selectedCategory.split(' ')[0]}
+                            ${selectedCategory} - ${months[selectedMonth]} ${selectedYear}
+                        </div>
+                        <div class="category-detail-total">
+                            $${total.toFixed(2)}
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="category-stats">
+                        <div class="category-stat-box">
+                            <div class="category-stat-label">Total Spent</div>
+                            <div class="category-stat-value">$${total.toFixed(2)}</div>
+                        </div>
+                        <div class="category-stat-box" style="border-left-color: var(--accent-warning);">
+                            <div class="category-stat-label">Average</div>
+                            <div class="category-stat-value">$${average.toFixed(2)}</div>
+                        </div>
+                        <div class="category-stat-box" style="border-left-color: var(--accent-danger);">
+                            <div class="category-stat-label">Highest</div>
+                            <div class="category-stat-value">$${highest.toFixed(2)}</div>
+                        </div>
+                        <div class="category-stat-box" style="border-left-color: var(--accent-success);">
+                            <div class="category-stat-label">Lowest</div>
+                            <div class="category-stat-value">$${lowest.toFixed(2)}</div>
+                        </div>
+                        <div class="category-stat-box" style="border-left-color: var(--accent-primary);">
+                            <div class="category-stat-label">Transactions</div>
+                            <div class="category-stat-value">${count}</div>
+                        </div>
+                    </div>
+
+                    <!-- Transactions List -->
+                    <div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.1em;">
+                            📋 All Transactions (${count})
+                        </h3>
+                        <div class="category-transactions-list">
+                            ${sortedTransactions.map(t => {
+                                const hasAttachments = t.attachments && t.attachments.length > 0;
+                                return `
+                                    <div class="category-transaction-item">
+                                        <div class="category-transaction-info">
+                                            <div class="category-transaction-name">
+                                                ${t.name}
+                                                ${hasAttachments ? `<span class="attachment-count">${t.attachments.length}</span>` : ''}
+                                            </div>
+                                            <div class="category-transaction-date">
+                                                ${new Date(t.date).toLocaleDateString('en-US', { 
+                                                    weekday: 'short',
+                                                    month: 'short', 
+                                                    day: 'numeric',
+                                                    year: 'numeric' 
+                                                })}
+                                            </div>
+                                        </div>
+                                        <div class="category-transaction-amount">
+                                            $${t.amount.toFixed(2)}
+                                        </div>
+                                        ${hasAttachments ? `
+                                            <button class="budget-edit-btn" onclick="openViewer(${t.id})" style="margin-left: 10px;">
+                                                📎 View
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
         // Initialize
         updateUserNameDisplay();
