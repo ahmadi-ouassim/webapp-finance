@@ -1933,6 +1933,204 @@
             color: var(--text-muted);
         }
 
+        /* Monthly Archive Comparison */
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .archive-month-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .archive-month-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+        }
+
+        .archive-month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .archive-month-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .archive-month-year {
+            font-size: 0.9em;
+            color: var(--text-muted);
+        }
+
+        .archive-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .archive-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .archive-stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .archive-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .archive-stat-value {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .archive-stat-value.income {
+            color: var(--accent-success);
+        }
+
+        .archive-stat-value.expense {
+            color: var(--accent-danger);
+        }
+
+        .archive-stat-value.balance {
+            color: var(--accent-primary);
+        }
+
+        .archive-savings-rate {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .current-month-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-warning);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .year-comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .year-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .year-nav-btn {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .year-nav-btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .year-display {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .yearly-summary {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .yearly-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .yearly-summary-item {
+            text-align: center;
+        }
+
+        .yearly-summary-label {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .yearly-summary-value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .reset-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .reset-notice-icon {
+            font-size: 1.5em;
+        }
+
+        .reset-notice-text {
+            flex: 1;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
         /* Firebase Auth UI */
         .auth-overlay {
             position: fixed;
@@ -2473,6 +2671,29 @@
                 <br><br>
                 <strong>Note:</strong> Currently shows manual analysis based on your spending patterns. For full AI-powered insights with Claude, API access would be needed.
             </div>
+        </div>
+
+        <!-- Monthly Archive & Year Comparison -->
+        <div class="section-card" style="margin-top: 25px; animation: fadeInUp 0.8s ease-out 0.95s both;">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="section-icon">📊</span>
+                    Monthly Archive & Year Comparison
+                </h2>
+            </div>
+
+            <div id="resetNotice"></div>
+
+            <div class="year-comparison-header">
+                <div class="year-selector">
+                    <button class="year-nav-btn" onclick="changeArchiveYear(-1)">←</button>
+                    <div class="year-display" id="archiveYearDisplay">2025</div>
+                    <button class="year-nav-btn" onclick="changeArchiveYear(1)">→</button>
+                </div>
+            </div>
+
+            <div id="yearlySummary"></div>
+            <div id="monthlyArchiveGrid" class="archive-grid"></div>
         </div>
 
         <!-- Budget Overview -->
@@ -3111,6 +3332,10 @@ Tap OK to copy to clipboard
         let alerts = [];
         let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts')) || {};
         
+        // Monthly archive system - stores summary of each completed month
+        let monthlyArchives = JSON.parse(localStorage.getItem('monthlyArchives')) || [];
+        let lastArchiveCheck = localStorage.getItem('lastArchiveCheck') || null;
+        
         // Search and filter state
         let searchQuery = '';
         let filterCategory = '';
@@ -3553,11 +3778,21 @@ Tap OK to copy to clipboard
 
         // Calculate totals
         function calculateTotals() {
-            const income = transactions
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Filter transactions for current month only
+            const currentMonthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+            });
+            
+            const income = currentMonthTransactions
                 .filter(t => t.type === 'income')
                 .reduce((sum, t) => sum + t.amount, 0);
             
-            const expenses = transactions
+            const expenses = currentMonthTransactions
                 .filter(t => t.type === 'expense')
                 .reduce((sum, t) => sum + t.amount, 0);
             
@@ -3570,11 +3805,26 @@ Tap OK to copy to clipboard
         // Update dashboard
         function updateDashboard() {
             const { income, expenses, balance, savingsRate } = calculateTotals();
+            
+            // Get current month name
+            const now = new Date();
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const currentMonthName = monthNames[now.getMonth()];
 
             document.getElementById('totalIncome').textContent = '$' + income.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('totalExpenses').textContent = '$' + expenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('balance').textContent = '$' + balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+            
+            // Update stat card titles to show current month
+            const statTitles = document.querySelectorAll('.stat-title');
+            if (statTitles.length >= 4) {
+                statTitles[0].innerHTML = `Total Income <span style="font-size: 0.7em; color: var(--text-muted); font-weight: 400;">(${currentMonthName})</span>`;
+                statTitles[1].innerHTML = `Total Expenses <span style="font-size: 0.7em; color: var(--text-muted); font-weight: 400;">(${currentMonthName})</span>`;
+                statTitles[2].innerHTML = `Balance <span style="font-size: 0.7em; color: var(--text-muted); font-weight: 400;">(${currentMonthName})</span>`;
+                statTitles[3].innerHTML = `Savings Rate <span style="font-size: 0.7em; color: var(--text-muted); font-weight: 400;">(${currentMonthName})</span>`;
+            }
         }
 
         // Update transaction list
@@ -4124,6 +4374,7 @@ Tap OK to copy to clipboard
             updateMonthComparison();
             checkBudgetAlerts();
             populateCategoryDetailSelector();
+            displayMonthlyArchives();  // Update archive display
         }
 
         // Tab Switching
@@ -5088,9 +5339,350 @@ Format your response in clear sections with emojis. Be specific, encouraging, an
             `;
         }
 
+        // ============================================
+        // MONTHLY ARCHIVE SYSTEM
+        // ============================================
+
+        let currentArchiveYear = new Date().getFullYear();
+
+        // Check if we need to archive last month (runs on app load)
+        function checkMonthlyArchive() {
+            const now = new Date();
+            const today = now.getDate();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Check if it's the 1st of the month
+            if (today === 1 || lastArchiveCheck === null) {
+                // Get last month's date
+                const lastMonth = new Date(currentYear, currentMonth - 1, 1);
+                const lastMonthKey = `${lastMonth.getFullYear()}-${lastMonth.getMonth()}`;
+                
+                // Check if we already archived last month
+                const alreadyArchived = monthlyArchives.some(archive => 
+                    archive.year === lastMonth.getFullYear() && 
+                    archive.month === lastMonth.getMonth()
+                );
+                
+                if (!alreadyArchived && transactions.length > 0) {
+                    // Archive last month's data
+                    archiveLastMonth(lastMonth);
+                    
+                    // Show notification
+                    showResetNotice(lastMonth);
+                }
+                
+                // Update last check
+                lastArchiveCheck = now.toISOString();
+                localStorage.setItem('lastArchiveCheck', lastArchiveCheck);
+            }
+        }
+
+        function archiveLastMonth(monthDate) {
+            const year = monthDate.getFullYear();
+            const month = monthDate.getMonth();
+            
+            // Filter transactions from that month
+            const monthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === month && tDate.getFullYear() === year;
+            });
+            
+            if (monthTransactions.length === 0) return;
+            
+            // Calculate statistics
+            const income = monthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const expenses = monthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const balance = income - expenses;
+            const savingsRate = income > 0 ? ((balance / income) * 100) : 0;
+            
+            // Category breakdown
+            const categoryBreakdown = {};
+            monthTransactions.filter(t => t.type === 'expense').forEach(t => {
+                categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + t.amount;
+            });
+            
+            // Create archive entry
+            const archive = {
+                year: year,
+                month: month,
+                income: income,
+                expenses: expenses,
+                balance: balance,
+                savingsRate: savingsRate,
+                transactionCount: monthTransactions.length,
+                categoryBreakdown: categoryBreakdown,
+                topCategory: Object.entries(categoryBreakdown).sort((a, b) => b[1] - a[1])[0] || ['N/A', 0],
+                archivedDate: new Date().toISOString()
+            };
+            
+            // Add to archives
+            monthlyArchives.push(archive);
+            
+            // Save to storage
+            saveMonthlyArchives();
+            
+            console.log(`📦 Archived ${getMonthName(month)} ${year}`);
+        }
+
+        function saveMonthlyArchives() {
+            localStorage.setItem('monthlyArchives', JSON.stringify(monthlyArchives));
+            if (firebaseInitialized && currentUser) {
+                const userRef = database.ref('users/' + currentUser.uid + '/monthlyArchives');
+                userRef.set(monthlyArchives);
+            }
+        }
+
+        function showResetNotice(lastMonth) {
+            const noticeDiv = document.getElementById('resetNotice');
+            const monthName = getMonthName(lastMonth.getMonth());
+            const year = lastMonth.getFullYear();
+            
+            noticeDiv.innerHTML = `
+                <div class="reset-notice">
+                    <div class="reset-notice-icon">✅</div>
+                    <div class="reset-notice-text">
+                        <strong>${monthName} ${year} has been archived!</strong><br>
+                        Your data from last month has been saved and is now viewable in the comparison below.
+                        Current month transactions will be tracked separately.
+                    </div>
+                </div>
+            `;
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                noticeDiv.innerHTML = '';
+            }, 10000);
+        }
+
+        function getMonthName(monthIndex) {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            return months[monthIndex];
+        }
+
+        function getShortMonthName(monthIndex) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[monthIndex];
+        }
+
+        // Display monthly archives
+        function displayMonthlyArchives() {
+            const gridDiv = document.getElementById('monthlyArchiveGrid');
+            const summaryDiv = document.getElementById('yearlySummary');
+            
+            // Filter archives for selected year
+            const yearArchives = monthlyArchives.filter(a => a.year === currentArchiveYear);
+            
+            // Also include current month if it's the selected year
+            const now = new Date();
+            const includeCurrentMonth = currentArchiveYear === now.getFullYear();
+            
+            // Calculate yearly totals
+            let yearlyIncome = 0;
+            let yearlyExpenses = 0;
+            let monthCount = 0;
+            
+            yearArchives.forEach(archive => {
+                yearlyIncome += archive.income;
+                yearlyExpenses += archive.expenses;
+                monthCount++;
+            });
+            
+            // Add current month if applicable
+            if (includeCurrentMonth) {
+                const currentMonthTransactions = transactions.filter(t => {
+                    const tDate = new Date(t.date);
+                    return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+                });
+                
+                const currentIncome = currentMonthTransactions
+                    .filter(t => t.type === 'income')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const currentExpenses = currentMonthTransactions
+                    .filter(t => t.type === 'expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                yearlyIncome += currentIncome;
+                yearlyExpenses += currentExpenses;
+                monthCount++;
+            }
+            
+            const yearlyBalance = yearlyIncome - yearlyExpenses;
+            const yearlySavingsRate = yearlyIncome > 0 ? ((yearlyBalance / yearlyIncome) * 100) : 0;
+            
+            // Display yearly summary
+            if (monthCount > 0) {
+                summaryDiv.innerHTML = `
+                    <div class="yearly-summary">
+                        <h3 style="color: var(--text-primary); margin-bottom: 20px; font-size: 1.2em;">
+                            📈 ${currentArchiveYear} Year Summary
+                        </h3>
+                        <div class="yearly-summary-grid">
+                            <div class="yearly-summary-item">
+                                <div class="yearly-summary-label">Total Income</div>
+                                <div class="yearly-summary-value" style="color: var(--accent-success);">
+                                    $${yearlyIncome.toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="yearly-summary-item">
+                                <div class="yearly-summary-label">Total Expenses</div>
+                                <div class="yearly-summary-value" style="color: var(--accent-danger);">
+                                    $${yearlyExpenses.toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="yearly-summary-item">
+                                <div class="yearly-summary-label">Net Balance</div>
+                                <div class="yearly-summary-value" style="color: var(--accent-primary);">
+                                    $${yearlyBalance.toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="yearly-summary-item">
+                                <div class="yearly-summary-label">Avg. Savings Rate</div>
+                                <div class="yearly-summary-value" style="color: var(--accent-warning);">
+                                    ${yearlySavingsRate.toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                summaryDiv.innerHTML = '';
+            }
+            
+            // Sort archives by month (0-11)
+            const sortedArchives = [...yearArchives].sort((a, b) => a.month - b.month);
+            
+            // Create month cards
+            let cardsHTML = '';
+            
+            // Add archived months
+            sortedArchives.forEach(archive => {
+                cardsHTML += createArchiveMonthCard(archive, false);
+            });
+            
+            // Add current month card if applicable
+            if (includeCurrentMonth) {
+                cardsHTML += createCurrentMonthCard();
+            }
+            
+            if (cardsHTML === '') {
+                gridDiv.innerHTML = `
+                    <div class="no-data-message" style="grid-column: 1 / -1;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📭</div>
+                        <div>No archived data for ${currentArchiveYear}</div>
+                        <div style="margin-top: 10px; color: var(--text-muted); font-size: 0.9em;">
+                            Months are automatically archived on the 1st of each month
+                        </div>
+                    </div>
+                `;
+            } else {
+                gridDiv.innerHTML = cardsHTML;
+            }
+        }
+
+        function createArchiveMonthCard(archive, isCurrent = false) {
+            return `
+                <div class="archive-month-card">
+                    ${isCurrent ? '<div class="current-month-badge">Current</div>' : ''}
+                    <div class="archive-month-header">
+                        <div>
+                            <div class="archive-month-name">${getShortMonthName(archive.month)}</div>
+                            <div class="archive-month-year">${archive.year}</div>
+                        </div>
+                    </div>
+                    <div class="archive-stats">
+                        <div class="archive-stat-row">
+                            <span class="archive-stat-label">💰 Income</span>
+                            <span class="archive-stat-value income">$${archive.income.toFixed(2)}</span>
+                        </div>
+                        <div class="archive-stat-row">
+                            <span class="archive-stat-label">💸 Expenses</span>
+                            <span class="archive-stat-value expense">$${archive.expenses.toFixed(2)}</span>
+                        </div>
+                        <div class="archive-stat-row">
+                            <span class="archive-stat-label">💵 Balance</span>
+                            <span class="archive-stat-value balance">$${archive.balance.toFixed(2)}</span>
+                        </div>
+                        <div class="archive-stat-row">
+                            <span class="archive-stat-label">📊 Transactions</span>
+                            <span class="archive-stat-value">${archive.transactionCount}</span>
+                        </div>
+                        <div class="archive-stat-row">
+                            <span class="archive-stat-label">🏆 Top Category</span>
+                            <span class="archive-stat-value" style="font-size: 0.85em;">${archive.topCategory[0]}</span>
+                        </div>
+                    </div>
+                    <div class="archive-savings-rate">
+                        Savings Rate: ${archive.savingsRate.toFixed(1)}%
+                    </div>
+                </div>
+            `;
+        }
+
+        function createCurrentMonthCard() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Get current month transactions
+            const monthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+            });
+            
+            const income = monthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const expenses = monthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const balance = income - expenses;
+            const savingsRate = income > 0 ? ((balance / income) * 100) : 0;
+            
+            // Category breakdown
+            const categoryBreakdown = {};
+            monthTransactions.filter(t => t.type === 'expense').forEach(t => {
+                categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + t.amount;
+            });
+            
+            const topCategory = Object.entries(categoryBreakdown).sort((a, b) => b[1] - a[1])[0] || ['N/A', 0];
+            
+            const archive = {
+                month: currentMonth,
+                year: currentYear,
+                income: income,
+                expenses: expenses,
+                balance: balance,
+                savingsRate: savingsRate,
+                transactionCount: monthTransactions.length,
+                topCategory: topCategory
+            };
+            
+            return createArchiveMonthCard(archive, true);
+        }
+
+        function changeArchiveYear(direction) {
+            currentArchiveYear += direction;
+            document.getElementById('archiveYearDisplay').textContent = currentArchiveYear;
+            displayMonthlyArchives();
+        }
+
         // Initialize
         updateUserNameDisplay();
+        checkMonthlyArchive();  // Check if we need to archive last month
         updateUI();
+        displayMonthlyArchives();  // Display archive comparison
 
         // Export Data
         function exportData() {
